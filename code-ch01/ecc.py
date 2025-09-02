@@ -23,7 +23,8 @@ class FieldElement:
 
     def __ne__(self, other):
         # this should be the inverse of the == operator
-        raise NotImplementedError
+        # raise NotImplementedError
+        return not (self == other)
 
     # tag::source2[]
     def __add__(self, other):
@@ -34,37 +35,39 @@ class FieldElement:
     # end::source2[]
 
     def __sub__(self, other):
-        if self.prime != other.prime:
-            raise TypeError('Cannot subtract two numbers in different Fields')
+        # if self.prime != other.prime:
+        #     raise TypeError('Cannot subtract two numbers in different Fields')
         # self.num and other.num are the actual values
         # self.prime is what we need to mod against
         # We return an element of the same class
-        raise NotImplementedError
+        # raise NotImplementedError
+        return self.__class__((self.num - other.num) % self.prime, self.prime)
 
     def __mul__(self, other):
-        if self.prime != other.prime:
-            raise TypeError('Cannot multiply two numbers in different Fields')
+        # if self.prime != other.prime:
+        #     raise TypeError('Cannot multiply two numbers in different Fields')
         # self.num and other.num are the actual values
         # self.prime is what we need to mod against
         # We return an element of the same class
-        raise NotImplementedError
+        # raise NotImplementedError
+        num = (self.num * other.num) % self.prime
+        return self.__class__(num, self.prime)
 
     # tag::source3[]
     def __pow__(self, exponent):
-        n = exponent % (self.prime - 1)  # <1>
-        num = pow(self.num, n, self.prime)
-        return self.__class__(num, self.prime)
+        return self.__class__(pow(self.num, exponent % (self.prime - 1), self.prime), self.prime)
     # end::source3[]
 
     def __truediv__(self, other):
-        if self.prime != other.prime:
-            raise TypeError('Cannot divide two numbers in different Fields')
+        # if self.prime != other.prime:
+        #     raise TypeError('Cannot divide two numbers in different Fields')
         # use fermat's little theorem:
         # self.num**(p-1) % p == 1
         # this means:
         # 1/n == pow(n, p-2, p)
         # We return an element of the same class
-        raise NotImplementedError
+        # raise NotImplementedError
+        return self.__class__(self.num * pow(other.num, self.prime - 2, self.prime) % self.prime, self.prime)
 
 
 class FieldElementTest(TestCase):
